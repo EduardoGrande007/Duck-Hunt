@@ -54,9 +54,9 @@
 </head>
 
 <body>
-    <img onclick="skudd(and1)" class="and" id="And" src="bilder/nyAnd.png" alt="">
-    <img onclick="skudd(and2)" class="and" id="And2" src="bilder/reversAnd.png" alt="">
-    <img onclick="fredskudd()" class="and" id="FrAnd" src="bilder/fredetAnd1.png" alt="">
+    <img onmousedown="skudd(and1)" class="and" id="And" src="bilder/nyAnd.png" alt="">
+    <img onmousedown="skudd(and2)" class="and" id="And2" src="bilder/reversAnd.png" alt="">
+    <img onmousedown="fredskudd()" class="and" id="FrAnd" src="bilder/fredetAnd1.png" alt="">
     
     <div class="score" id="score">High Score: 0</div>
     <div class="lives" id="lives">Lives: 3</div>
@@ -99,7 +99,7 @@
         };
 
 
-        
+
         let freAnd = {
             opp: 0,
             sin_1: 70,
