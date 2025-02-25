@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duck Hunt Game</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background-image: url("bilder/duckHunt.png");
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .and {
+            height: 150px;
+            width: 150px;
+            position: absolute;
+        }
+
+        .score, .lives {
+            position: fixed;
+            bottom: 20px;
+            font-size: 24px;
+            background-color: black;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 3px 3px 0px #000;
+        }
+
+        .score {
+            left: 20px;
+        }
+
+        .lives {
+            right: 20px;
+        }
+
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <img onclick="skudd(and1)" class="and" id="And" src="bilder/nyAnd.png" alt="">
+    <img onclick="skudd(and2)" class="and" id="And2" src="bilder/reversAnd.png" alt="">
+    <img onclick="fredskudd()" class="and" id="FrAnd" src="bilder/fredetAnd1.png" alt="">
+    
+    <div class="score" id="score">High Score: 0</div>
+    <div class="lives" id="lives">Lives: 3</div>
+    
+    <img id="gameOverImg" class="game-over" src="bilder/gameover.png" alt="Game Over">
+    
+    <script>
+        const SCREEN_WIDTH = document.body.offsetWidth;
+        let score = 0;
+        let lives = 3;
+
+        function resetAnd(and) {
+            and.sin_top = Math.floor(Math.random() * 300) + 100;
+            and.left = and.x_fart > 0 ? -100 : SCREEN_WIDTH;
+            and.bilde.style.display = "block";
+        }
+
+        let and1 = {
+            opp: 0,
+            sin_1: 100,
+            sin_2: 0.02,
+            sin_top: Math.floor(Math.random() * 300) + 100,
+            left: -100,
+            x_fart: 6,
+            bilde: document.getElementById("And"),
+            type: "normal",
+            hit: false
+        };
+
+        let and2 = {
+            opp: 0,
+            sin_1: 100,
+            sin_2: 0.02,
+            sin_top: Math.floor(Math.random() * 300) + 100,
+            left: SCREEN_WIDTH,
+            x_fart: -6,
+            bilde: document.getElementById("And2"),
+            type: "normal",
+            hit: false
+        };
+
+        let freAnd = {
+            opp: 0,
+            sin_1: 70,
+            sin_2: 0.01,
+            sin_top: Math.floor(Math.random() * 200) + 100,
+            left: -100,
+            x_fart: 2,
+            bilde: document.getElementById("FrAnd"),
+            type: "fredet"
+        };
+
+        let ender = [and1, and2, freAnd];
+
+        function flytt(and) {
+            and.left += and.x_fart;
+            and.opp = and.sin_1 * Math.sin(and.left * and.sin_2) + and.sin_top;
+            and.bilde.style.left = and.left + "px";
+            and.bilde.style.top = and.opp + "px";
+        }
+
+        function oppdaterAlt() {
+            for (const and of ender) {
+                flytt(and);
+            }
+
+            ender = ender.filter(and => {
+                if (and.left > SCREEN_WIDTH || and.left < -150) {
+                    if (and.type !== "fredet") {
+                        mistLiv();
+                    }
+                    resetAnd(and);
+                }
+                return true;
+            });
+
+            if (lives > 0) {
+                requestAnimationFrame(oppdaterAlt);
+            } else {
+                document.getElementById("gameOverImg").style.display = "block";
+            }
+        }
+
+        oppdaterAlt();
+
+        function skudd(and) {
+            and.bilde.style.display = "none";
+            and.hit = true;
+            score += 100;
+            document.getElementById("score").innerText = "High Score: " + score;
+            setTimeout(() => resetAnd(and), 1000);
+        }
+
+        function fredskudd() {
+            document.getElementById("FrAnd").style.display = "none";
+            mistLiv();
+            setTimeout(() => resetAnd(freAnd), 1000);
+        }
+
+        function mistLiv() {
+            lives--;
+            document.getElementById("lives").innerText = "Lives: " + lives;
+            if (lives <= 0) {
+                document.getElementById("gameOverImg").style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
